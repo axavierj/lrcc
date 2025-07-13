@@ -1,0 +1,43 @@
+# Exported from Render on 2025-07-13T19:22:04Z
+databases:
+  - name: lrcc-cookbook
+    databaseName: lrcc
+    user: lrcc_user
+    plan: free
+    region: oregon
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: everywhere
+    postgresMajorVersion: "16"
+services:
+  - type: web
+    name: lrcc
+    runtime: node
+    repo: https://github.com/axavierj/lrcc
+    plan: free
+    envVars:
+      - key: FRONTEND_URL
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: JWT_RESET_SECRET
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: lrcc-cookbook
+          property: connectionString
+    region: oregon
+    buildCommand: npm install
+    startCommand: node index.js
+    autoDeployTrigger: commit
+  - type: web
+    name: webproject
+    runtime: static
+    repo: https://github.com/axavierj/webproject
+    staticPublishPath: .
+    autoDeployTrigger: commit
+version: "1"
+preDeployCommand: |
+  npx prisma migrate deploy
