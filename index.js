@@ -8,7 +8,13 @@ import KoaRatelimit from "koa-ratelimit";
 
 const app = new Koa();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://webproject-yrz5.onrender.com", // Allow all origins, adjust as needed for security
+    allowMethods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
+    allowHeaders: ["Content-Type", "Authorization"], // Allowed headers
+  })
+);
 
 app.use(bodyParser());
 
